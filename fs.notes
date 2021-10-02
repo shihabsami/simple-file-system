@@ -1,0 +1,21 @@
+NOTES V1.0
+@note1
+ This is the first note. Notice the leading space.
+ Another line.
+@note2
+ The next note is empty.
+@emptynote
+=dir1/
+=dir2/
+@dir1/note1
+ Although this is also note1, it is not in the root dir as the first was.
+ Dir2 above is an empty dir.
+#deletednote
+#these lines are ignored when reading in VSFS
+@dir3/abc
+ This is an error, since dir3 was not created using a directory record.
+ This should terminate with an appropriate error message to stderr, and
+ error code as per section3.4.
+@dir1/note1
+ Another error.
+ Exit code as per 3.4 since note1 already exists in dir1.
