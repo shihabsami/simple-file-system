@@ -2,6 +2,7 @@
 
 #include "vsfs_list.h"
 #include "vsfs_copyin.h"
+#include "vsfs_test.h"
 
 int main(int argc, char** argv) {
     /*
@@ -24,6 +25,8 @@ int main(int argc, char** argv) {
             return vsfs_list(argc, argv);
         } else if (strcmp(argv[1], "copyin") == 0) {
             return vsfs_copyin(argc, argv);
+        } else if (strcmp(argv[1], "test") == 0) {
+            return vsfs_test(argc, argv);
         }
     } catch (...) {
         fprintf(stderr, "Something went wrong\n");

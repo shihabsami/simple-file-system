@@ -1,10 +1,22 @@
 CXX = g++
 CXXFLAGS = -Wall -Werror -std=c++17 -g
 
-all: vsfs
+SRC = $(wildcard *.cpp)
+OBJ = $(SRC:.cpp=.o)
+DEP = $(SRC:.cpp=.d)
+BIN = vsfs
 
-vsfs: main.cpp
-	$(CXX) $(CXXFLAGS) -o $@ $<
+all: $(BIN)
+
+$(BIN): $(OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(OBJ): $(SRC)
+	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
+
+.PHONY: clean
 
 clean:
-	$(RM) vsfs *.o
+	$(RM) $(OBJ) $(DEP) $(BIN)
+
+-include $(DEP)
