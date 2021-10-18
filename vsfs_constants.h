@@ -14,10 +14,8 @@ constexpr char FILE_RECORD_IDENTIFIER = '@';
 constexpr char DIR_RECORD_IDENTIFIER = '=';
 constexpr char DELETED_RECORD_IDENTIFIER = '#';
 constexpr char RECORD_CONTENT_IDENTIFIER = ' ';
-
-enum VSFS_err_codes {
-    FS_EXTENSION_ERROR = 132,
-    FS_FIRST_RECORD_ERROR = 133
-};
+constexpr const char* VSFS_ERROR_PREFIX = "Invalid VSFS:";
+constexpr const char* GZIP_ENCODE_PREFIX = "gzip ";
+constexpr const char* GZIP_DECODE_PREFIX = "gzip -d ";
 
 #endif // VSFS_CONSTANTS_H

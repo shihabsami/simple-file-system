@@ -7,57 +7,54 @@
 #include <fstream>
 #include <sstream>
 
+bool if_valid(const std::string& if_path) {
+    return (if_path.at(0) == '/'
+        || if_path.at(if_path.at(if_path.size() - 1) == '/')
+//        || (if_path.size() > 1 && if_path.substr(0, 1) == "..")
+        || if_path == ".."
+//        || if_path.at(0) == '.'
+        || if_path == ".");
+}
+
 int vsfs_copyin(int argc, char** argv) {
     // Verify command structure
     if (!argv[2]) {
-        fprintf(stderr, "No FS provided\n");
+        fprintf(stderr, "%s No FS provided\n", VSFS_ERROR_PREFIX);
         return EINVAL;
     } else if (!argv[3]) {
-        fprintf(stderr, "No EF provided\n");
+        fprintf(stderr, "%s No EF provided\n", VSFS_ERROR_PREFIX);
         return EINVAL;
     } else if (!argv[4]) {
-        fprintf(stderr, "No IF provided\n");
+        fprintf(stderr, "%s No IF provided\n", VSFS_ERROR_PREFIX);
         return EINVAL;
     } else if (argc > 5) {
-        fprintf(stderr, "Arguments for command \"list\", expected: 4, received: %d\n", argc - 1);
+        fprintf(stderr, "%s  Arguments for command \"copyin\", expected: 3, received: %d\n",
+            VSFS_ERROR_PREFIX, argc - 2);
         return E2BIG;
     }
 
     std::string fs_path = argv[2], ef_path = argv[3], if_path = argv[4];
-    std::fstream fs_file, ef_file, if_file;
+    std::fstream fs_file, ef_file;
 
     try {
         int err_code = EXIT_FAILURE;
         // Open FS file in read/write/append mode
-        if ((err_code = open_fs(fs_path, fs_file, std::ios::in | std::ios::out)) != EXIT_SUCCESS || !fs_file.is_open())
+        if ((err_code = open_fs(fs_path, fs_file, std::ios::in | std::ios::out)) != EXIT_SUCCESS)
             return err_code;
-
-        // Verify first record
-        std::string fs_line;
-        std::getline(fs_file, fs_line);
-        if (fs_line != FS_FIRST_RECORD) {
-            fprintf(stderr, "First record of FS must be \"NOTES V1.0\"\n");
-            return FS_FIRST_RECORD_ERROR;
-        }
 
         // Open EF file in read mode, throws error if file does not exist
-        if ((err_code = open_ef(ef_path, ef_file, std::ios::in)) != EXIT_SUCCESS || !ef_file.is_open())
+        if ((err_code = open_ef(ef_path, ef_file, std::ios::in)) != EXIT_SUCCESS)
             return err_code;
 
-        // Open IF file in read mode, create file if file does not exist, if exists clear the existing content
-        if ((err_code = open_if(if_path, if_file, std::ios::out | std::ios::trunc)) != EXIT_SUCCESS || !if_file.is_open())
-            return err_code;
-
-        // Delete the record to be written/appended to
-        while (!fs_file.eof() && fs_file.peek() != EOF && std::getline(fs_file, fs_line)) {
-            if (fs_line.at(0) == FILE_RECORD_IDENTIFIER) {
-                if (fs_line.substr(1) == if_path) {
-                    fs_file.seekp(std::ios::off_type(fs_file.tellp()) - (int) fs_line.size() - 1,
-                        std::ios_base::beg);
-                    fs_file.put(DELETED_RECORD_IDENTIFIER);
-                }
-            }
+        // Check whether IF is valid
+        if (!if_valid(if_path)) {
+            fprintf(stderr, "%s IF is invalid: %s\n",
+                VSFS_ERROR_PREFIX, if_path.c_str());
+            return EXIT_FAILURE;
         }
+
+        // Delete the record first, if exists
+        delete_record(fs_file, if_path, FILE_RECORD_IDENTIFIER);
 
         // Verify if last char is a newline
         fs_file.seekg(-1, std::ios::end);
@@ -68,14 +65,13 @@ int vsfs_copyin(int argc, char** argv) {
         fs_file.close();
         fs_file.clear();
         fs_file.open(fs_path, std::ios::app);
-
-        // Add new record to FS
         if (last_char != '\n')
             fs_file << '\n';
-        fs_file << FILE_RECORD_IDENTIFIER << if_path << '\n';
 
-        // Write from EF to IF
+        // Add new record to FS
+        fs_file << FILE_RECORD_IDENTIFIER << if_path << '\n';
         std::string ef_line;
+        // Write from EF to IF
         while (!ef_file.eof() && ef_file.peek() != EOF && std::getline(ef_file, ef_line)) {
             size_t size = ef_line.size();
             if (size > MAXIMUM_RECORD_LENGTH) {
@@ -85,11 +81,11 @@ int vsfs_copyin(int argc, char** argv) {
                 ef_line.append("\n");
             }
 
-            if_file << ef_line;
             fs_file << RECORD_CONTENT_IDENTIFIER << ef_line;
         }
     } catch (const std::ifstream::failure& failure) {
-        fprintf(stderr, "I/O error: %s\n", failure.code().message().c_str());
+        fprintf(stderr, "%s Unknown I/O error: %s\n",
+            VSFS_ERROR_PREFIX, failure.code().message().c_str());
         return failure.code().value();
     }
 

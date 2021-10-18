@@ -4,6 +4,7 @@ CXXFLAGS = -Wall -Werror -std=c++17 -g
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
+
 BIN = vsfs
 
 all: $(BIN)

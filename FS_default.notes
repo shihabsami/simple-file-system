@@ -1,0 +1,23 @@
+NOTES V1.0
+=dir3/
+=dir1/
+=dir2/
+=dir1/dir1/
+@dir2/file2
+ Some content
+@dir1/dir1/file4
+ Some more content
+ Yes there is a lot of content
+@dir2/file1
+ Some text
+ Literature
+ Banana
+ Apple
+=dir3/dir1/
+=dir3/dir1/dir2/
+@dir1/file4
+ Alphabet
+ Character
+=dir1/dir2/
+@file1
+ My file is here
