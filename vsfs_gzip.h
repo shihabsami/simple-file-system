@@ -10,7 +10,8 @@
 #include <string>
 #include <array>
 
-int decode(const std::string& fs_path) {
+int decode(const std::string& fs_path)
+{
     std::string command = GZIP_DECODE_PREFIX + fs_path;
     FILE* pipe = popen(command.c_str(), "r");
     if (!pipe)
@@ -19,7 +20,8 @@ int decode(const std::string& fs_path) {
     return pclose(pipe);
 }
 
-int encode(const std::string& fs_path) {
+int encode(const std::string& fs_path)
+{
     std::string command = GZIP_ENCODE_PREFIX + fs_path;
     FILE* pipe = popen(command.c_str(), "r");
     if (!pipe)
@@ -28,7 +30,8 @@ int encode(const std::string& fs_path) {
     return pclose(pipe);
 }
 
-int vsfs_gzip(int argc, char** argv) {
+int vsfs_gzip(int argc, char** argv)
+{
     std::string path(argv[2]);
     if (path.find(".gz") == std::string::npos)
         encode(argv[2]);

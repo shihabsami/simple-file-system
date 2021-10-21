@@ -1,5 +1,5 @@
 NOTES V1.0
-=dir3/
+#dir3/
 =dir1/
 =dir2/
 =dir1/dir1/
@@ -13,8 +13,8 @@ NOTES V1.0
  Literature
  Banana
  Apple
-=dir3/dir1/
-=dir3/dir1/dir2/
+#dir3/dir1/
+#dir3/dir1/dir2/
 @dir1/file4
  Alphabet
  Character

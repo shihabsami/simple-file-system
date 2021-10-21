@@ -6,59 +6,78 @@
 
 class dir;
 
-class file {
+class file
+{
 public:
     explicit file(std::string name, std::string path)
-        : m_name(std::move(name)), m_path(std::move(path)), m_parent(nullptr) {}
+        : m_name(std::move(name)), m_path(std::move(path)), m_parent(nullptr), m_deleted(false)
+    {}
 
-    virtual ~file() {
+    virtual ~file()
+    {
         m_parent = nullptr;
     }
 
-    [[nodiscard]] virtual std::string get_name() const {
+    [[nodiscard]] virtual std::string get_name() const
+    {
         return m_name;
     }
 
-    virtual void set_name(const std::string& name) {
+    virtual void set_name(const std::string& name)
+    {
         m_name = name;
     }
 
-    [[nodiscard]] virtual const std::string& get_path() const {
+    [[nodiscard]] virtual const std::string& get_path() const
+    {
         return m_path;
     }
 
-    virtual void set_path(const std::string& path) {
+    virtual void set_path(const std::string& path)
+    {
         file::m_path = path;
     }
 
-    [[nodiscard]] virtual dir* get_parent() const {
+    [[nodiscard]] virtual dir* get_parent() const
+    {
         return m_parent;
     }
 
-    virtual void set_parent(dir* parent) {
+    virtual void set_parent(dir* parent)
+    {
         m_parent = parent;
     }
 
-    [[nodiscard]] virtual const std::string& get_content() const {
+    [[nodiscard]] virtual const std::string& get_content() const
+    {
         return m_content;
     }
 
-    virtual void set_content(const std::string& content) {
+    virtual void set_content(const std::string& content)
+    {
         m_content = content;
     }
 
-    virtual void append_content(const std::string& content) {
+    virtual void append_content(const std::string& content)
+    {
         m_content.append(content);
     }
 
-    virtual void list() const {
-        std::cout << m_name << " (in " << m_parent << ')' << std::endl;
+    [[nodiscard]] bool is_deleted() const
+    {
+        return m_deleted;
+    }
+
+    void set_deleted(bool deleted)
+    {
+        m_deleted = deleted;
     }
 
 protected:
     std::string m_name;
     std::string m_path;
     dir* m_parent;
+    bool m_deleted;
 
 private:
     std::string m_content;

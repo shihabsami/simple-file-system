@@ -14,6 +14,7 @@ constexpr char FILE_RECORD_IDENTIFIER = '@';
 constexpr char DIR_RECORD_IDENTIFIER = '=';
 constexpr char DELETED_RECORD_IDENTIFIER = '#';
 constexpr char RECORD_CONTENT_IDENTIFIER = ' ';
+constexpr char PATH_SEPARATOR = '/';
 constexpr const char* VSFS_ERROR_PREFIX = "Invalid VSFS:";
 constexpr const char* GZIP_ENCODE_PREFIX = "gzip ";
 constexpr const char* GZIP_DECODE_PREFIX = "gzip -d ";
