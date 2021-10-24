@@ -10,7 +10,7 @@ class file
 {
 public:
     explicit file(std::string name, std::string path)
-        : m_name(std::move(name)), m_path(std::move(path)), m_parent(nullptr), m_deleted(false)
+        : m_name(std::move(name)), m_path(std::move(path)), m_parent(nullptr)
     {}
 
     virtual ~file()
@@ -63,21 +63,10 @@ public:
         m_content.append(content);
     }
 
-    [[nodiscard]] bool is_deleted() const
-    {
-        return m_deleted;
-    }
-
-    void set_deleted(bool deleted)
-    {
-        m_deleted = deleted;
-    }
-
 protected:
     std::string m_name;
     std::string m_path;
     dir* m_parent;
-    bool m_deleted;
 
 private:
     std::string m_content;

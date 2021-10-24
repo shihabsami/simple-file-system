@@ -10,50 +10,53 @@
 
 int main(int argc, char** argv)
 {
+    // Run the appropriate command
     try
     {
         if (!argv[1])
         {
-            fprintf(stderr, "%s No commands found\n", VSFS_ERROR_PREFIX);
+            fprintf(stderr, "%s No commands provided\n", VSFS_ERROR_PREFIX);
             return EXIT_FAILURE;
         }
-        else if (strcmp(argv[1], "list") == 0)
+        else if (strcmp(argv[1], commands[LIST]) == 0)
         {
             return vsfs_list(argc, argv);
         }
-        else if (strcmp(argv[1], "copyin") == 0)
+        else if (strcmp(argv[1], commands[COPYIN]) == 0)
         {
             return vsfs_copyin(argc, argv);
         }
-        else if (strcmp(argv[1], "copyout") == 0)
+        else if (strcmp(argv[1], commands[COPYOUT]) == 0)
         {
             return vsfs_copyout(argc, argv);
         }
-        else if (strcmp(argv[1], "mkdir") == 0)
+        else if (strcmp(argv[1], commands[MKDIR]) == 0)
         {
             return vsfs_mkdir(argc, argv);
         }
-        else if (strcmp(argv[1], "rm") == 0)
+        else if (strcmp(argv[1], commands[RM]) == 0)
         {
             return vsfs_rm(argc, argv);
         }
-        else if (strcmp(argv[1], "rmdir") == 0)
+        else if (strcmp(argv[1], commands[RMDIR]) == 0)
         {
             return vsfs_rmdir(argc, argv);
         }
-        else if (strcmp(argv[1], "defrag") == 0)
+        else if (strcmp(argv[1], commands[DEFRAG]) == 0)
         {
             return vsfs_defrag(argc, argv);
         }
         else
         {
-            fprintf(stderr, "%s Invalid command: %s\n", VSFS_ERROR_PREFIX, argv[1]);
+            fprintf(stderr, "%s Unknown command \"%s\"\n", VSFS_ERROR_PREFIX, argv[1]);
             return EXIT_FAILURE;
         }
     }
-    catch (...)
+    catch (const std::exception& exception)
     {
-        fprintf(stderr, "%s Unknown error\n", VSFS_ERROR_PREFIX);
+        // Very less likely to occur
+        // Yet is caught and output printed for better understanding of any outstanding error
+        fprintf(stderr, "%s %s\n", VSFS_ERROR_PREFIX, exception.what());
         return EXIT_FAILURE;
     }
 }

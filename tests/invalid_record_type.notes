@@ -1,0 +1,8 @@
+NOTES V1.0
+@file1
+@file2
+=dir1/
+=dir1/dir2/
+@dir1/file1
+$dir1/file2
+ Invalid as the record type is '$'.

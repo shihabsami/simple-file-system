@@ -8,16 +8,17 @@ int vsfs_mkdir(int argc, char** argv)
     // Verify number of arguments
     if (argc != 4)
     {
-        fprintf(stderr, "%s Arguments for command \"mkdir\", expected: 2, received: %d\n",
+        fprintf(stderr, "%s Arguments for command \"mkdir\", expected 2, received %d\n",
             VSFS_ERROR_PREFIX, argc - 2);
         return EXIT_FAILURE;
     }
 
     std::string fs_path = argv[2], id_path = argv[3];
     std::fstream fs_file;
+    bool is_compressed{};
 
     // Open the FS file in read and append mode
-    int err_code = open_fs(fs_path, fs_file, std::ios::in | std::ios::app);
+    int err_code = open_fs(fs_path, fs_file, is_compressed, std::ios::in | std::ios::app);
     if (err_code != EXIT_SUCCESS)
         return err_code;
 
@@ -33,13 +34,10 @@ int vsfs_mkdir(int argc, char** argv)
     std::string fs_line;
     while (read_line(fs_file, fs_line))
     {
-        if (fs_line.front() == DIR_RECORD_IDENTIFIER)
+        if (fs_line.front() == DIR_RECORD_IDENTIFIER && fs_line.substr(1) == id_path)
         {
-            if (fs_line.substr(1) == id_path)
-            {
-                fprintf(stderr, "%s ID already exists\n", VSFS_ERROR_PREFIX);
-                return EXIT_FAILURE;
-            }
+            fprintf(stderr, "%s ID already exists \"%s\"\n", VSFS_ERROR_PREFIX, id_path.c_str());
+            return EXIT_FAILURE;
         }
     }
 
@@ -52,8 +50,8 @@ int vsfs_mkdir(int argc, char** argv)
     catch (std::ios::failure& failure)
     {
         // If writing to FS failed
-        fprintf(stderr, "%s Failed to add dir to FS: %s",
-            VSFS_ERROR_PREFIX, failure.code().message().c_str());
+        fprintf(stderr, "%s Failed to add dir \"%s\" to FS %s",
+            VSFS_ERROR_PREFIX, id_path.c_str(), failure.code().message().c_str());
         return EIO;
     }
 

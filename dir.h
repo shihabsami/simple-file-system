@@ -37,21 +37,36 @@ public:
 
     void remove_child(file* child)
     {
-        size_t index = find(child);
+        size_t index = find_by_name(child);
         if (index != m_children.size())
             m_children.erase(m_children.begin() + (int) index);
     }
 
-    size_t find(file* child)
+    size_t find_by_name(file* child)
     {
-        return find(child->get_name());
+        return find_by_name(child->get_name());
     }
 
-    size_t find(const std::string& child_name)
+    size_t find_by_path(file* child)
+    {
+        return find_by_path(child->get_path());
+    }
+
+    size_t find_by_name(const std::string& child_name)
     {
         size_t index = 0;
         for (; index < m_children.size(); index++)
             if (m_children.at(index)->get_name() == child_name)
+                break;
+
+        return index;
+    }
+
+    size_t find_by_path(const std::string& child_path)
+    {
+        size_t index = 0;
+        for (; index < m_children.size(); index++)
+            if (m_children.at(index)->get_path() == child_path)
                 break;
 
         return index;
